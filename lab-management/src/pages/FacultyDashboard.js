@@ -11,14 +11,28 @@ const FacultyDashboard = () => {
   });
 
   const [requests, setRequests] = useState([
-    { id: 1, labType: 'Computer Lab', status: 'Pending', date: '2025-03-01' },
-    { id: 2, labType: 'Hardware Lab', status: 'Approved', date: '2025-03-05' }
+    // { id: 1, labType: 'Computer Lab', status: 'Pending', date: '2025-03-01' },
+    // { id: 2, labType: 'Hardware Lab', status: 'Approved', date: '2025-03-05' }
   ]);
-
+  const totalTime = (time ,duration) =>{
+    let [hours,minutes] = time.split(':').map(Number);
+    let totMin = (minutes + hours*60 + parseInt(duration)*60);
+    let newHour = Math.floor(totMin/60)%24;
+    let newMin = (totMin)%60;
+    return `${newHour.toString().padStart(2,'0')}:${newMin.toString().padStart(2,'0')}`
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle lab request submission
     console.log('Lab request submitted:', labRequest);
+    const newRequest ={
+      id:requests.length + 1,
+      labType: labRequest.labType,
+      status: 'Pending',
+      date: labRequest.date,
+      duration: `${labRequest.time} to ${totalTime(labRequest.time,labRequest.duration)}`,
+    };
+    setRequests((prevRequests)=>[...prevRequests,newRequest])
   };
 
   return (
@@ -140,7 +154,11 @@ const FacultyDashboard = () => {
                       {request.status}
                     </span>
                   </div>
+                  <div className='flex items-center justify-between'>
                   <p className="text-sm text-gray-600">Date: {request.date}</p>
+                  <p className="text-sm text-gray-600">Time-Slot: {request.duration}</p>
+                  </div>
+
                 </div>
               ))}
             </div>
@@ -148,7 +166,6 @@ const FacultyDashboard = () => {
         </div>
       </div>
       <div>
-        {/* <Schedule /> */}
       </div>
     </div>
   );
